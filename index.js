@@ -12,7 +12,15 @@ app.use(cors());
 app.use(bodyparser.json());
 
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB Connected"))
+.catch(err => {
+  console.error("❌ MongoDB Connection Failed:", err.message);
+  process.exit(1);
+});
 
 
 
@@ -32,7 +40,7 @@ app.use('/api/questions', questionRoutes);
 
 app.use('/api/leaderboard', leaderboardRoutes);
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
