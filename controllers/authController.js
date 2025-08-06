@@ -25,10 +25,17 @@ exports.sendOTP = async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ message: "Email is required" });
 
+ try {
+  const user = await User.findOne({email});
+  if(!user){
+    return res.status(404).json({ message: "User not found" });
+  }
+
+
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   otpStore[email] = otp;
 
-  try {
+ 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -38,7 +45,7 @@ exports.sendOTP = async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: `"Quiz App" <${process.env.EMAIL_USER}>`,
+      from: `"Quizfy.com" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Your OTP for Quiz Login",
       text: `Your OTP is: ${otp}`
@@ -64,7 +71,7 @@ exports.verifyOTP = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    delete otpStore[email]; // invalidate OTP
+    delete otpStore[email];
 
     res.json({
       message: "OTP verified",

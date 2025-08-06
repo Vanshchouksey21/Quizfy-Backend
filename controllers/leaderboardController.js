@@ -1,6 +1,6 @@
 const Leaderboard = require('../models/Leaderboard');
 
-// Save a new score (called after quiz submission)
+// Save a new score 
 exports.saveScore = async (req, res) => {
   try {
     const { user, subject, score } = req.body;
@@ -18,12 +18,12 @@ exports.saveScore = async (req, res) => {
   }
 };
 
-// Get unified leaderboard: all users, all subjects, sorted by score desc
+// Get  leaderboard: 
 exports.getLeaderboard = async (req, res) => {
   try {
     const entries = await Leaderboard.find({})
       .sort({ score: -1, date: 1 })
-      .limit(50);  // Top 50 entries
+      .limit(50); 
 
     res.json(entries);
   } catch (error) {
